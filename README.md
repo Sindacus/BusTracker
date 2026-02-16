@@ -22,7 +22,8 @@ Ensure you have the following installed on your machine:
 ## 3. DATABASE DATA IMPORT
 Before starting the application, you must populate your local database with the provided user and bus stop data. Run these two commands in your terminal:
 
-$mongoimport --db progettoBus --collection utenti --file utenti.json --jsonArray$ mongoimport --db progettoBus --collection fermate --file fermate.json --jsonArray
+$mongoimport --db progettoBus --collection utenti --file utenti.json --jsonArray
+$mongoimport --db progettoBus --collection fermate --file fermate.json --jsonArray
 
 ---
 
