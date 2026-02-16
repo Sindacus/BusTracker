@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Area Conducente</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="login-box">
+        <h1>Login Conducente</h1>
+
+        <input type="text" id="user" placeholder="Username"><br><br>
+        <input type="password" id="pass" placeholder="Password"><br><br>
+
+        <button onclick="faiLogin()">Accedi</button>
+    </div>
+
+    <div id="driver-panel" class="nascosto">
+        <h2 id="saluto"></h2>
+
+        <label>Scegli la linea:</label>
+        <select id="linea-select"></select><br><br>
+
+        <button id="btn-gps" onclick="toggleServizio()">Inizia Servizio</button>
+        <p id="stato">Stato: Disconnesso</p>
+    </div>
+
+    <script>
+
+        let watchId = null;
+
+        async function faiLogin() {
+
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+
+            const res = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: user,
+                    password: pass
+                })
+            });
+
+            if (res.ok) {
+
+                const data = await res.json();
+
+                document.getElementById('saluto').innerText =
+                    "Benvenuto " + data.nome;
+
+                caricaLinee();
+
+            } else {
+                alert("Credenziali errate!");
+            }
+        }
+
+        async function caricaLinee() {
+
+            const res = await fetch('http://localhost:3000/linee');
+            const linee = await res.json();
+
+            const select = document.getElementById('linea-select');
+
+            linee.forEach(l => {
+
+                let o = document.createElement('option');
+                o.value = l;
+                o.innerText = l;
+
+                select.appendChild(o);
+
+            });
+
+            document.getElementById('login-box')
+                .classList.add('nascosto');
+
+            document.getElementById('driver-panel')
+                .classList.remove('nascosto');
+        }
+
+        async function toggleServizio() {
+
+            const btn = document.getElementById('btn-gps');
+            const linea = document.getElementById('linea-select').value;
+
+            if (watchId) {
+
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+
+                await fetch('http://localhost:3000/interrompi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome: linea })
+                });
+
+                btn.innerText = "Inizia Servizio";
+                document.getElementById('stato').innerText =
+                    "Stato: Servizio Interrotto";
+
+            } else {
+
+                watchId = navigator.geolocation.watchPosition(
+
+                    pos => {
+
+                        fetch('http://localhost:3000/aggiorna', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                nome: linea,
+                                lat: pos.coords.latitude,
+                                lng: pos.coords.longitude
+                            })
+                        });
+
+                        document.getElementById('stato').innerText =
+                            "In servizio su: " + linea;
+                    },
+
+                    err => alert("Attiva il GPS del browser!"),
+
+                    { enableHighAccuracy: true }
+                );
+
+                btn.innerText = "Interrompi Servizio";
+            }
+        }
+
+    </script>
+
+</body>
+</html>

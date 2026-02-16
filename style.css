@@ -1,0 +1,162 @@
+/* RESET BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* BODY GENERALE */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e3f2fd, #ffffff);
+    color: #333;
+}
+
+/* ===== MAPPA ===== */
+#map {
+    height: 100vh;
+    width: 100%;
+}
+
+/* ===== BOTTONI ===== */
+button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #2A81CB;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: #1f5f94;
+    transform: translateY(-2px);
+}
+
+/* ===== SELECT ===== */
+select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+/* ===== LINK AREA CONDUCENTE ===== */
+.btn-login {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #2A81CB;
+    font-weight: bold;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    background: #2A81CB;
+    color: white;
+}
+
+/* ===== CONTROL PANEL ===== */
+.control-panel {
+    position: absolute;
+    top: 15px;
+    left: 60px;
+    z-index: 1000;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* ===== LEGENDA ===== */
+.legend {
+    position: absolute;
+    bottom: 30px;
+    left: 15px;
+    z-index: 1000;
+    background: white;
+    padding: 12px 15px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    line-height: 24px;
+}
+
+.legend i {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* ===== LOGIN BOX ===== */
+#login-box {
+    max-width: 350px;
+    margin: 80px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+#login-box h1 {
+    margin-bottom: 20px;
+    color: #2A81CB;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+    transition: border 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border: 1px solid #2A81CB;
+}
+
+/* ===== DRIVER PANEL ===== */
+#driver-panel {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+#saluto {
+    margin-bottom: 15px;
+    color: #2A81CB;
+}
+
+#stato {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #444;
+}
+
+/* ===== NASCOSTO ===== */
+.nascosto {
+    display: none;
+}
+
+.leaflet-popup-content {
+    font-weight: bold;
+    color: #e65100;
+}

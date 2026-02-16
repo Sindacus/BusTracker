@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mappa Utente</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <a href="conducente.html" class="btn-login">Area Conducente</a>
+
+    <div class="control-panel">
+        <label><b>Seleziona Linea:</b></label><br>
+        <select id="filtro-linea" onchange="cambiaLinea()">
+            <option value="">-- Scegli una linea --</option>
+            <option value="Linea 1">Linea 1</option>
+            <option value="Linea 2">Linea 2</option>
+            <option value="Linea 3">Linea 3</option>
+            <option value="Linea 4">Linea 4</option>
+            <option value="Linea 5">Linea 5</option>
+        </select>
+    </div>
+
+    <div class="legend">
+        <b>Legenda</b><br>
+        <i style="background: #ff7800; border: 2px solid #e65100;"></i> Fermata<br>
+        <i style="background: #2A81CB;"></i> Bus Attivo
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        var mappa = L.map('map').setView([40.8529, 14.2746], 13);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(mappa);
+
+        var layerBus = L.layerGroup().addTo(mappa);
+        var layerFermate = L.layerGroup().addTo(mappa);
+
+        let lineaSelezionata = "";
+
+        function cambiaLinea() {
+            lineaSelezionata = document.getElementById('filtro-linea').value;
+            caricaFermate();
+            aggiornaMappa();
+        }
+
+        function caricaFermate() {
+
+            if (!lineaSelezionata) {
+                layerFermate.clearLayers();
+                return;
+            }
+
+            fetch(`http://localhost:3000/fermate/${encodeURIComponent(lineaSelezionata)}`)
+                .then(r => r.json())
+                .then(fermate => {
+
+                    layerFermate.clearLayers();
+
+                    fermate.forEach(f => {
+                        L.circleMarker(
+                            [f.lat, f.lng],
+                            {
+                                radius: 8,
+                                fillColor: "#ff7800",
+                                color: "#e65100",
+                                weight: 2,
+                                opacity: 1,
+                                fillOpacity: 0.8
+                            }
+                        )
+                        .addTo(layerFermate)
+                        .bindPopup("Fermata: " + f.nome);
+                    });
+
+                });
+        }
+
+        function aggiornaMappa() {
+
+            fetch('http://localhost:3000/leggi')
+                .then(r => r.json())
+                .then(listaBus => {
+
+                    layerBus.clearLayers();
+
+                    if (listaBus.length === 0) {
+                        console.log("Nessun bus attivo.");
+                        return;
+                    }
+
+                    listaBus.forEach(bus => {
+
+                        if (!lineaSelezionata || bus.nome === lineaSelezionata) {
+
+                            L.marker([bus.lat, bus.lng])
+                                .addTo(layerBus)
+                                .bindPopup("<b>Bus:</b> " + bus.nome);
+
+                        }
+
+                    });
+
+                })
+                .catch(err => {
+                    console.error("Errore connessione server:", err);
+                    layerBus.clearLayers();
+                });
+        }
+
+        setInterval(aggiornaMappa, 3000);
+
+    </script>
+
+</body>
+</html>
